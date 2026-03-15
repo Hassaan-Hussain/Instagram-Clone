@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import UserProfile
+from apps.posts.models import UserPosts
 
 # class UserAdmin(admin.ModelAdmin):
     # This tells the admin which fields to show when EDITING a user
@@ -23,4 +24,13 @@ from .models import UserProfile
     # list_display = ('username', 'first_name', 'last_name', 'email', 'is_active', 'is_staff', 'is_superuser')
     # search_fields = ('username',)
 
-admin.site.register(UserProfile)
+class postinline(admin.TabularInline):
+    model = UserPosts
+
+class postadmin(admin.ModelAdmin):
+    inlines = [
+        postinline,
+    ]
+
+admin.site.register(UserProfile, postadmin)
+admin.site.register(UserPosts)

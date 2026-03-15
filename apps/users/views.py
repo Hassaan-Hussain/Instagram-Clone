@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import auth, messages
 from .forms import UserRegistrationForm
 from .models import UserProfile
+from apps.posts.models import UserPosts
 
 # Create your views here.
 
@@ -40,8 +41,10 @@ def logout(request):
 
 def profile(request, username):
     user = UserProfile.objects.get(username=username)
+    posts = UserPosts.objects.filter(author=request.user)
     context = {
         'user': user,
+        'posts': posts
     }
     return render(request, 'users/profile.html', context)
 

@@ -1,0 +1,21 @@
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Edit Post</title>
+</head>
+<body class='bg-slate-700 grid place-content-center justify-items-center min-h-screen w-full'>
+    <form action="" method='post' class="text-white border rounded-xl p-10 ">
+        <h1 class='text-center font-medium text-lg'>Edit Post</h1>
+        <div class="text-black">
+            {% csrf_token %}
+            {{form | crispy }}
+            <a href="{% url "profile" request.user.username %}" class='bg-yellow-700'>Go Back</a>
+            <a href="{% url "profile" request.user.username %}" class='bg-red-700'><button type='submit'>Delete</button></a>
+        </div>
+    </form>
+</body>
+</html>

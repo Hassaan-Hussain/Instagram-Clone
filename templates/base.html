@@ -46,8 +46,11 @@
 
                 <!-- Nav Icons -->
                 <div class="flex items-center space-x-4">
-                    <a href="#}" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">
+                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">
                         <i class="fas fa-home text-xl"></i>
+                    </a>
+                    <a href="{% url "upload_post" %}" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">
+                        <i class="fas fa-plus text-xl"></i>
                     </a>
                     <a href="" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white relative">
                         <i class="fa-regular fa-paper-plane text-xl"></i>
@@ -108,11 +111,14 @@
             </div>
         </div>
     </nav>
+    {% block content %}
     <!-- Main Content -->
     <main class="pt-28 md:pt-24 pb-8">
         <div class="max-w-6xl mx-auto px-4">
-            <div class="flex flex-col lg:flex-row gap-8">
-                
+            <div class="flex flex-col lg:flex-row gap-8 text-green-700">
+                {% for message in messages %}
+                    {{message}}
+                {% endfor %}
                 <!-- Left Column (Feed) -->
                 <div class="lg:w-2/3">
                     
@@ -160,7 +166,7 @@
                         {% for post in posts %}
                         <!-- Post Card -->
                         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                            <!-- Post Header -->
+                            {% comment %} <!-- Post Header -->
                             <div class="flex items-center justify-between p-4">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-10 h-10 rounded-full overflow-hidden">
@@ -184,12 +190,12 @@
                                 <button class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
                                     <i class="fas fa-ellipsis-h"></i>
                                 </button>
-                            </div>
+                            </div> {% endcomment %}
 
                             <!-- Post Image -->
                             <div class="aspect-square bg-gray-100 dark:bg-gray-900">
-                                {% if post.image %}
-                                    <img src="{{ post.image.url }}" alt="Post image" class="w-full h-full object-cover">
+                                {% if post.post_image %}
+                                    <img src="{{ post.post_image.url }}" alt="Post image" class="w-full h-full object-cover">
                                 {% else %}
                                     <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600">
                                         <i class="fas fa-image text-4xl"></i>
@@ -223,14 +229,14 @@
 
                                 <!-- Caption -->
                                 <div class="mb-2">
-                                    <span class="font-semibold text-gray-800 dark:text-white">{{ post.user.username }}</span>
+                                    <span class="font-semibold text-gray-800 dark:text-white">{{ post.author.username }}</span>
                                     <span class="text-gray-700 dark:text-gray-300">{{ post.caption }}</span>
                                 </div>
 
                                 <!-- Comments Preview -->
                                 {% if post.comments_count > 0 %}
                                 <a href="#" class="text-gray-500 dark:text-gray-400 text-sm mb-2 block">
-                                    View all {{ post.comments_count }} comments
+                                    View all {{ post.comments }} comments
                                 </a>
                                 {% endif %}
 
@@ -342,7 +348,8 @@
                 </div>
             </div>
         </div>
-    </main>
+    </main>    
+    {% endblock content %}
 
     <!-- Mobile Bottom Navigation -->
     <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2">
@@ -353,7 +360,7 @@
             <a href="#" class="text-gray-600 dark:text-gray-300">
                 <i class="fa-regular fa-compass text-2xl"></i>
             </a>
-            <a href="#}" class="bg-purple-600 text-white p-3 rounded-full -mt-8 shadow-lg">
+            <a href="{% url "upload_post" %}" class="bg-purple-600 text-white p-3 rounded-full -mt-8 shadow-lg">
                 <i class="fas fa-plus text-xl"></i>
             </a>
             <a href="#" class="text-gray-600 dark:text-gray-300 relative">
