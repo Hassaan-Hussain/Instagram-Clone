@@ -1,0 +1,364 @@
+<!-- templates/registration/signup.html -->
+{% load static %}
+{% load tailwind_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Clone - Sign Up</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-400 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    
+    <div class="max-w-md w-full space-y-8">
+        <!-- Header -->
+        <div class="text-center">
+            <div class="flex justify-center">
+                <i class="fas fa-camera-retro text-5xl text-purple-600"></i>
+            </div>
+            <h2 class="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
+                Create Account
+            </h2>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Sign up to see photos from your friends
+            </p>
+        </div>
+        
+        <!-- Registration Form -->
+        <form action="" method="post" enctype='multipart/form-data' class='text-white'>
+            {% csrf_token %}
+            {{form | crispy }}
+            <button type="submit" class='p-1 bg-purple-800 rounded'>Register</button>
+        </form>
+
+        <!-- Login Link -->
+        <div class="text-center">
+            <p class="text-sm text-black ">
+                Already have an account? 
+                <a href="{% url "login" %}">
+                    <button 
+                        class="font-medium text-purple-900 hover:text-purple-500 ">
+                    Sign in
+                </button>
+                </a>
+            </p>
+        </div>
+
+        <!-- Dark Mode Toggle -->
+        <div class="absolute top-4 right-4">
+            <button type="button" 
+                    onclick="toggleDarkMode()"
+                    class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                <i class="fas fa-moon" id="darkModeIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="termsModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full mx-4 p-6 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Terms and Conditions</h3>
+                <button type="button" onclick="hideTerms()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 space-y-4">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('darkModeIcon').className = 'fas fa-moon';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('darkModeIcon').className = 'fas fa-sun';
+            }
+        }
+
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('darkModeIcon').className = 'fas fa-sun';
+        }
+
+        // Toggle Password Visibility
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById('togglePasswordIcon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // Password Strength Checker
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            // Check length
+            if (password.length >= 8) {
+                strength += 25;
+                document.getElementById('lengthCheck').innerHTML = '<i class="fas fa-check-circle text-green-500 mr-2"></i> At least 8 characters';
+            } else {
+                document.getElementById('lengthCheck').innerHTML = '<i class="fas fa-times-circle text-red-500 mr-2"></i> At least 8 characters';
+            }
+            
+            // Check uppercase
+            if (/[A-Z]/.test(password)) {
+                strength += 25;
+                document.getElementById('uppercaseCheck').innerHTML = '<i class="fas fa-check-circle text-green-500 mr-2"></i> At least one uppercase letter';
+            } else {
+                document.getElementById('uppercaseCheck').innerHTML = '<i class="fas fa-times-circle text-red-500 mr-2"></i> At least one uppercase letter';
+            }
+            
+            // Check number
+            if (/[0-9]/.test(password)) {
+                strength += 25;
+                document.getElementById('numberCheck').innerHTML = '<i class="fas fa-check-circle text-green-500 mr-2"></i> At least one number';
+            } else {
+                document.getElementById('numberCheck').innerHTML = '<i class="fas fa-times-circle text-red-500 mr-2"></i> At least one number';
+            }
+            
+            // Check special character
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                strength += 25;
+                document.getElementById('specialCheck').innerHTML = '<i class="fas fa-check-circle text-green-500 mr-2"></i> At least one special character';
+            } else {
+                document.getElementById('specialCheck').innerHTML = '<i class="fas fa-times-circle text-red-500 mr-2"></i> At least one special character';
+            }
+            
+            // Update strength bar
+            const strengthBar = document.getElementById('strengthBar');
+            strengthBar.style.width = strength + '%';
+            
+            if (strength <= 25) {
+                strengthBar.className = 'h-2 rounded-full bg-red-500';
+                document.getElementById('passwordStrength').textContent = 'Weak';
+                document.getElementById('passwordStrength').className = 'text-xs font-semibold text-red-500';
+            } else if (strength <= 50) {
+                strengthBar.className = 'h-2 rounded-full bg-orange-500';
+                document.getElementById('passwordStrength').textContent = 'Fair';
+                document.getElementById('passwordStrength').className = 'text-xs font-semibold text-orange-500';
+            } else if (strength <= 75) {
+                strengthBar.className = 'h-2 rounded-full bg-yellow-500';
+                document.getElementById('passwordStrength').textContent = 'Good';
+                document.getElementById('passwordStrength').className = 'text-xs font-semibold text-yellow-500';
+            } else {
+                strengthBar.className = 'h-2 rounded-full bg-green-500';
+                document.getElementById('passwordStrength').textContent = 'Strong';
+                document.getElementById('passwordStrength').className = 'text-xs font-semibold text-green-500';
+            }
+        });
+
+        // Username availability check (simulated)
+        let usernameTimeout;
+        document.getElementById('username').addEventListener('input', function() {
+            clearTimeout(usernameTimeout);
+            const username = this.value;
+            const availabilityEl = document.getElementById('usernameAvailability');
+            
+            if (username.length < 3) {
+                availabilityEl.textContent = 'Username must be at least 3 characters';
+                availabilityEl.className = 'mt-1 text-xs text-red-500';
+                return;
+            }
+            
+            availabilityEl.textContent = 'Checking availability...';
+            availabilityEl.className = 'mt-1 text-xs text-gray-500 dark:text-gray-400';
+            
+            usernameTimeout = setTimeout(() => {
+                // Simulate API call
+                const takenUsernames = ['john_doe', 'jane_smith', 'admin', 'user'];
+                if (takenUsernames.includes(username.toLowerCase())) {
+                    availabilityEl.textContent = 'Username already taken';
+                    availabilityEl.className = 'mt-1 text-xs text-red-500';
+                } else {
+                    availabilityEl.textContent = 'Username available';
+                    availabilityEl.className = 'mt-1 text-xs text-green-500';
+                }
+            }, 1000);
+        });
+
+        // Form Validation
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            const email = document.getElementById('email');
+            const fullName = document.getElementById('fullName');
+            const username = document.getElementById('username');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const terms = document.getElementById('terms');
+            
+            // Reset errors
+            hideErrors();
+            
+            // Validate email
+            if (!email.value) {
+                showError('email', 'Email is required');
+                isValid = false;
+            } else if (!isValidEmail(email.value)) {
+                showError('email', 'Please enter a valid email');
+                isValid = false;
+            }
+            
+            // Validate full name
+            if (!fullName.value) {
+                showError('fullName', 'Full name is required');
+                isValid = false;
+            }
+            
+            // Validate username
+            if (!username.value) {
+                showError('username', 'Username is required');
+                isValid = false;
+            } else if (username.value.length < 3) {
+                showError('username', 'Username must be at least 3 characters');
+                isValid = false;
+            }
+            
+            // Validate password
+            if (!password.value) {
+                showError('password', 'Password is required');
+                isValid = false;
+            } else if (password.value.length < 8) {
+                showError('password', 'Password must be at least 8 characters');
+                isValid = false;
+            }
+            
+            // Validate password match
+            if (password.value !== confirmPassword.value) {
+                showError('confirmPassword', 'Passwords do not match');
+                isValid = false;
+            }
+            
+            // Validate terms
+            if (!terms.checked) {
+                document.getElementById('termsError').textContent = 'You must agree to the terms and conditions';
+                document.getElementById('termsError').className = 'text-xs text-red-500';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                simulateSignup();
+            }
+        });
+
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.add('border-red-500', 'focus:ring-red-500');
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+            
+            // Add to error container
+            const errorContainer = document.getElementById('errorMessages');
+            const errorList = document.getElementById('errorList');
+            const errorItem = document.createElement('div');
+            errorItem.className = 'mb-1';
+            errorItem.textContent = '• ' + message;
+            errorList.appendChild(errorItem);
+            
+            errorContainer.classList.remove('hidden');
+        }
+
+        function hideErrors() {
+            // Clear field errors
+            document.querySelectorAll('[id$="Error"]').forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+            
+            // Clear input borders
+            document.querySelectorAll('input').forEach(el => {
+                el.classList.remove('border-red-500', 'focus:ring-red-500');
+            });
+            
+            // Clear error container
+            document.getElementById('errorList').innerHTML = '';
+            document.getElementById('errorMessages').classList.add('hidden');
+            document.getElementById('termsError').textContent = '';
+        }
+
+        // Simulate signup
+        function simulateSignup() {
+            const button = document.getElementById('signupButton');
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating account...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                
+                // Show success message
+                const successEl = document.getElementById('successMessage');
+                const successText = document.getElementById('successText');
+                successText.textContent = 'Account created successfully! Redirecting to login...';
+                successEl.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    alert('Redirect to login page');
+                    // window.location.href = '/login/'; // Uncomment for actual redirect
+                }, 2000);
+            }, 2000);
+        }
+
+        // Modal functions
+        function showTerms() {
+            document.getElementById('termsModal').classList.remove('hidden');
+            document.getElementById('termsModal').classList.add('flex');
+        }
+
+        function hideTerms() {
+            document.getElementById('termsModal').classList.add('hidden');
+            document.getElementById('termsModal').classList.remove('flex');
+        }
+
+        function showPrivacy() {
+            alert('Privacy Policy modal would open here');
+        }
+
+        // Redirect functions
+        function redirectToLogin() {
+            alert('Redirect to login page');
+            // window.location.href = '/login/'; // Uncomment for actual redirect
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('termsModal');
+            if (event.target === modal) {
+                hideTerms();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!-- templates/home.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Clone - Home</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Dark mode script -->
+    <script>
+        // Check for saved theme preference or system preference
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+
+    <!-- Navbar -->
+    <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed w-full z-10 top-0">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="{% url "home" %}" class="text-2xl font-bold text-gray-800 dark:text-white">
+                        <i class="fas fa-camera-retro mr-2 text-purple-600"></i>
+                        InstaClone
+                    </a>
+                </div>
+
+                <!-- Search Bar (Desktop) -->
+                <div class="hidden md:block flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input type="text" 
+                               placeholder="Search" 
+                               class="w-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400 dark:text-gray-500"></i>
+                    </div>
+                </div>
+
+                <!-- Nav Icons -->
+                <div class="flex items-center space-x-4">
+                    <a href="#}" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">
+                        <i class="fas fa-home text-xl"></i>
+                    </a>
+                    <a href="" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white relative">
+                        <i class="fa-regular fa-paper-plane text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                    </a>
+                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">
+                        <i class="fa-regular fa-compass text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white relative">
+                        <i class="fa-regular fa-heart text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">5</span>
+                    </a>
+                    
+                    <!-- Dark Mode Toggle -->
+                    <button id="theme-toggle" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">
+                        <i id="theme-icon" class="fas fa-moon text-xl"></i>
+                    </button>
+
+                    <!-- Profile Dropdown (Desktop) -->
+                    <div class="relative hidden md:block">
+                        <button id="profile-dropdown-btn" class="flex items-center space-x-2 focus:outline-none">
+                            {% if user.profile_image %}
+                                <img src="{{ user.profile_image.url }}" alt="Profile" class="w-8 h-8 rounded-full object-cover">
+                            {% else %}
+                                <div class="overflow-hidden w-8 h-8 rounded-full  bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
+                                    <img src="{% static "profile_pictures/default1.jpg" %}" alt="">
+                                </div>
+                            {% endif %}
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div id="profile-dropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 hidden border border-gray-200 dark:border-gray-700">
+                            <a href="{% url 'profile' user.username %}" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-user mr-2"></i> Profile
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-bookmark mr-2"></i> Saved
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-cog mr-2"></i> Settings
+                            </a>
+                            <hr class="my-1 border-gray-200 dark:border-gray-700">
+                            <a href="{% url "logout" %}" class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="md:hidden py-3">
+                <div class="relative">
+                    <input type="text" 
+                           placeholder="Search" 
+                           class="w-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400 dark:text-gray-500"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <main class="pt-28 md:pt-24 pb-8">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-8">
+                
+                <!-- Left Column (Feed) -->
+                <div class="lg:w-2/3">
+                    
+                    <!-- Stories Section -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6 overflow-x-auto">
+                        <div class="flex space-x-4 min-w-max">
+                            <!-- Your Story -->
+                            <div class="flex flex-col items-center space-y-1 cursor-pointer">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-yellow-400 to-pink-600 p-[2px]">
+                                    <div class="w-full h-full rounded-full border-2 border-white dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-800">
+                                        {% if user.profile_image %}
+                                            <img src="{{ user.profile_image.url }}" alt="Your story" class="w-full h-full object-cover">
+                                        {% else %}
+                                            <div class="w-full h-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-xl font-bold">
+                                                +
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">Your story</span>
+                            </div>
+
+                            <!-- Stories from following users -->
+                            {% for story in stories %}
+                            <div class="flex flex-col items-center space-y-1 cursor-pointer">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-yellow-400 to-pink-600 p-[2px]">
+                                    <div class="w-full h-full rounded-full border-2 border-white dark:border-gray-800 overflow-hidden">
+                                        {% if story.user.profile_pic %}
+                                            <img src="{{ story.user.profile_pic.url }}" alt="{{ story.user.username }}" class="w-full h-full object-cover">
+                                        {% else %}
+                                            <div class="w-full h-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-400 text-xl font-bold">
+                                                {{ story.user.username|first|upper }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <span class="text-xs text-gray-600 dark:text-gray-400">{{ story.user.username }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Feed Posts -->
+                    <div class="space-y-6">
+                        {% for post in posts %}
+                        <!-- Post Card -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <!-- Post Header -->
+                            <div class="flex items-center justify-between p-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full overflow-hidden">
+                                        {% if post.user.profile_pic %}
+                                            <img src="{{ post.user.profile_pic.url }}" alt="{{ post.user.username }}" class="w-full h-full object-cover">
+                                        {% else %}
+                                            <div class="w-full h-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
+                                                {{ post.user.username|first|upper }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <a href="#" class="font-semibold text-gray-800 dark:text-white hover:underline">
+                                            {{ post.user.username }}
+                                        </a>
+                                        {% if post.location %}
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ post.location }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <button class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+
+                            <!-- Post Image -->
+                            <div class="aspect-square bg-gray-100 dark:bg-gray-900">
+                                {% if post.image %}
+                                    <img src="{{ post.image.url }}" alt="Post image" class="w-full h-full object-cover">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600">
+                                        <i class="fas fa-image text-4xl"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Post Actions -->
+                            <div class="p-4">
+                                <div class="flex justify-between mb-4">
+                                    <div class="flex space-x-4">
+                                        <button class="like-btn text-2xl text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-500 transition-colors" data-post-id="{{ post.id }}">
+                                            <i class="fa-regular fa-heart"></i>
+                                        </button>
+                                        <button class="text-2xl text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors">
+                                            <i class="fa-regular fa-comment"></i>
+                                        </button>
+                                        <button class="text-2xl text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors">
+                                            <i class="fa-regular fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                    <button class="save-btn text-2xl text-gray-600 dark:text-gray-400 hover:text-yellow-500 dark:hover:text-yellow-500 transition-colors" data-post-id="{{ post.id }}">
+                                        <i class="fa-regular fa-bookmark"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Likes -->
+                                <div class="mb-2">
+                                    <span class="font-semibold text-gray-800 dark:text-white">{{ post.likes_count }} likes</span>
+                                </div>
+
+                                <!-- Caption -->
+                                <div class="mb-2">
+                                    <span class="font-semibold text-gray-800 dark:text-white">{{ post.user.username }}</span>
+                                    <span class="text-gray-700 dark:text-gray-300">{{ post.caption }}</span>
+                                </div>
+
+                                <!-- Comments Preview -->
+                                {% if post.comments_count > 0 %}
+                                <a href="#" class="text-gray-500 dark:text-gray-400 text-sm mb-2 block">
+                                    View all {{ post.comments_count }} comments
+                                </a>
+                                {% endif %}
+
+                                <!-- Timestamp -->
+                                <p class="text-xs text-gray-400 dark:text-gray-600 uppercase">{{ post.created_at|timesince }} ago</p>
+
+                                <!-- Add Comment -->
+                                <div class="flex items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <input type="text" 
+                                           placeholder="Add a comment..." 
+                                           class="flex-1 bg-transparent text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none text-sm">
+                                    <button class="text-purple-600 font-semibold text-sm opacity-50 cursor-not-allowed" disabled>Post</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <!-- Empty State -->
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-8 text-center border border-gray-200 dark:border-gray-700">
+                            <i class="fas fa-camera-retro text-5xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">No Posts Yet</h3>
+                            <p class="text-gray-500 dark:text-gray-400 mb-4">Follow some users to see their posts here</p>
+                            <a href="#" class="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                                Explore Users
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Right Column (Suggestions) - Hidden on mobile -->
+                <div class="hidden lg:block lg:w-1/3">
+                    <div class="sticky top-24">
+                        <!-- Current User Profile -->
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 rounded-full overflow-hidden">
+                                    {% if user.profile_image %}
+                                        <img src="{{ user.profile_image.url }}" alt="{{ user.username }}" class="w-full h-full object-cover">
+                                    {% else %}
+                                        <div class="w-full h-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-xl">
+                                            {{ user.username|first|upper }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <a href="#" class="font-semibold text-gray-800 dark:text-white hover:underline">
+                                        {{ user.username }}
+                                    </a>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ user.full_name|default:user.username }}</p>
+                                </div>
+                            </div>
+                            <a href="#" class="text-sm text-purple-600 font-semibold hover:text-purple-700">
+                                Switch
+                            </a>
+                        </div>
+
+                        <!-- Suggestions Header -->
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">Suggestions For You</span>
+                            <a href="#" class="text-xs text-gray-800 dark:text-white font-semibold hover:text-gray-600 dark:hover:text-gray-300">
+                                See All
+                            </a>
+                        </div>
+
+                        <!-- Suggested Users -->
+                        <div class="space-y-4">
+                            {% for suggestion in suggestions %}
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden">
+                                        {% if suggestion.profile_pic %}
+                                            <img src="{{ suggestion.profile_pic.url }}" alt="{{ suggestion.username }}" class="w-full h-full object-cover">
+                                        {% else %}
+                                            <div class="w-full h-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-400 text-sm font-bold">
+                                                {{ suggestion.username|first|upper }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <a href="#" class="text-sm font-semibold text-gray-800 dark:text-white hover:underline">
+                                            {{ suggestion.username }}
+                                        </a>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Suggested for you</p>
+                                    </div>
+                                </div>
+                                <button class="follow-btn text-xs text-purple-600 font-semibold hover:text-purple-700" data-user-id="{{ suggestion.id }}">
+                                    Follow
+                                </button>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Footer Links -->
+                        <div class="mt-6">
+                            <p class="text-xs text-gray-400 dark:text-gray-600">
+                                <a href="#" class="hover:underline">About</a> • 
+                                <a href="#" class="hover:underline">Help</a> • 
+                                <a href="#" class="hover:underline">Press</a> • 
+                                <a href="#" class="hover:underline">API</a> • 
+                                <a href="#" class="hover:underline">Jobs</a> • 
+                                <a href="#" class="hover:underline">Privacy</a> • 
+                                <a href="#" class="hover:underline">Terms</a>
+                            </p>
+                            <p class="text-xs text-gray-400 dark:text-gray-600 mt-4">
+                                © 2024 INSTACLONE FROM META
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-2">
+        <div class="flex justify-around items-center">
+            <a href="#" class="text-gray-600 dark:text-gray-300">
+                <i class="fas fa-home text-2xl"></i>
+            </a>
+            <a href="#" class="text-gray-600 dark:text-gray-300">
+                <i class="fa-regular fa-compass text-2xl"></i>
+            </a>
+            <a href="#}" class="bg-purple-600 text-white p-3 rounded-full -mt-8 shadow-lg">
+                <i class="fas fa-plus text-xl"></i>
+            </a>
+            <a href="#" class="text-gray-600 dark:text-gray-300 relative">
+                <i class="fa-regular fa-heart text-2xl"></i>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">5</span>
+            </a>
+            <a href="#" class="text-gray-600 dark:text-gray-300">
+                <div class="w-7 h-7 rounded-full overflow-hidden">
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image.url }}" alt="Profile" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                            <img src="{% static "profile_pictures/default1.jpg" %}" alt="">
+                        </div>
+                    {% endif %}
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Dark Mode Toggle Script -->
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        
+        // Check initial theme and set icon
+        if (document.documentElement.classList.contains('dark')) {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        } else {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        });
+
+        // Profile dropdown toggle
+        const profileBtn = document.getElementById('profile-dropdown-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        
+        if (profileBtn && profileDropdown) {
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        // Like button functionality (demo)
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('fa-regular')) {
+                    icon.classList.remove('fa-regular');
+                    icon.classList.add('fa-solid', 'text-red-500');
+                } else {
+                    icon.classList.remove('fa-solid', 'text-red-500');
+                    icon.classList.add('fa-regular');
+                }
+            });
+        });
+
+        // Save button functionality (demo)
+        document.querySelectorAll('.save-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('fa-regular')) {
+                    icon.classList.remove('fa-regular');
+                    icon.classList.add('fa-solid', 'text-yellow-500');
+                } else {
+                    icon.classList.remove('fa-solid', 'text-yellow-500');
+                    icon.classList.add('fa-regular');
+                }
+            });
+        });
+
+        // Follow button functionality (demo)
+        document.querySelectorAll('.follow-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.textContent === 'Follow') {
+                    this.textContent = 'Following';
+                    this.classList.remove('text-purple-600', 'hover:text-purple-700');
+                    this.classList.add('text-gray-600', 'dark:text-gray-400');
+                } else {
+                    this.textContent = 'Follow';
+                    this.classList.remove('text-gray-600', 'dark:text-gray-400');
+                    this.classList.add('text-purple-600', 'hover:text-purple-700');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

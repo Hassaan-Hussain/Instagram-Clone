@@ -1,0 +1,358 @@
+<!-- templates/registration/login.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Clone - Login</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    
+    <div class="max-w-md w-full space-y-8">
+        <!-- Header -->
+        <div class="text-center">
+            <div class="flex justify-center">
+                <i class="fas fa-camera-retro text-5xl text-purple-600"></i>
+            </div>
+            <h2 class="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
+                InstaClone
+            </h2>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Sign in to your account
+            </p>
+        </div>
+        {% if messages %}
+        {% for message in messages %}
+            <div class="text-red-500">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% endif %}
+        <!-- Login Form -->
+        <form class="mt-8 space-y-6" method="POST" action='{% url "login" %}'>
+            {% csrf_token %}
+            
+            <!-- Error Messages Container -->
+            <div id="errorMessages" class="hidden">
+                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
+                                There were errors with your submission
+                            </h3>
+                            <div class="mt-2 text-sm text-red-700 dark:text-red-300" id="errorList">
+                                <!-- Errors will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="rounded-md shadow-sm space-y-4">
+                <!-- Username/Email Field -->
+                <div>
+                    <label for="username" class="sr-only">Username or Email</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input id="username" 
+                               name="username" 
+                               type="text" 
+                               required 
+                               class="appearance-none relative block w-full pl-10 px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm bg-white dark:bg-gray-800"
+                               placeholder="Username or email">
+                    </div>
+                    <p class="mt-1 text-xs text-red-600 hidden" id="usernameError"></p>
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                    <label for="password" class="sr-only">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input id="password" 
+                               name="password" 
+                               type="password" 
+                               required 
+                               class="appearance-none relative block w-full pl-10 px-3 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm bg-white dark:bg-gray-800"
+                               placeholder="Password">
+                        <button type="button" 
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                onclick="togglePasswordVisibility('password')">
+                            <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                        </button>
+                    </div>
+                    <p class="mt-1 text-xs text-red-600 hidden" id="passwordError"></p>
+                </div>
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input id="remember" 
+                           name="remember" 
+                           type="checkbox" 
+                           class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                    <label for="remember" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                        Remember me
+                    </label>
+                </div>
+
+                <div class="text-sm">
+                    <button type="button" 
+                            onclick="showForgotPassword()"
+                            class="font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300">
+                        Forgot your password?
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <i class="fas fa-sign-in-alt text-purple-500 group-hover:text-purple-400"></i>
+                    </span>
+                    Sign in
+                </button>
+            </div>
+        </form>
+
+        <!-- Sign Up Link -->
+        <div class="text-center">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                Don't have an account? 
+                <a href="{% url "register" %}">
+                    <button class="font-medium text-purple-600 hover:text-purple-500">
+                    Sign up
+                </button>
+                </a>
+            </p>
+        </div>
+
+        <!-- Dark Mode Toggle -->
+        <div class="absolute top-4 right-4">
+            <button type="button" 
+                    onclick="toggleDarkMode()"
+                    class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                <i class="fas fa-moon" id="darkModeIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full mx-4 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Reset Password</h3>
+                <button type="button" onclick="hideForgotPassword()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Enter your email address and we'll send you a link to reset your password.
+            </p>
+            <input type="email" 
+                   id="resetEmail" 
+                   placeholder="Enter your email"
+                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white mb-4">
+            <div class="flex space-x-3">
+                <button type="button" 
+                        onclick="sendResetLink()"
+                        class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+                    Send Reset Link
+                </button>
+                <button type="button" 
+                        onclick="hideForgotPassword()"
+                        class="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('darkModeIcon').className = 'fas fa-moon';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('darkModeIcon').className = 'fas fa-sun';
+            }
+        }
+
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('darkModeIcon').className = 'fas fa-sun';
+        }
+
+        // Toggle Password Visibility
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById('togglePasswordIcon');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // Form Validation
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            const username = document.getElementById('username');
+            const password = document.getElementById('password');
+            
+            // Reset errors
+            hideErrors();
+            
+            // Validate username
+            if (!username.value.trim()) {
+                showError('username', 'Username or email is required');
+                isValid = false;
+            } else if (username.value.length < 3) {
+                showError('username', 'Username must be at least 3 characters');
+                isValid = false;
+            }
+            
+            // Validate password
+            if (!password.value) {
+                showError('password', 'Password is required');
+                isValid = false;
+            } else if (password.value.length < 6) {
+                showError('password', 'Password must be at least 6 characters');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Simulate login - Replace with actual form submission
+                simulateLogin(username.value, password.value);
+            }
+        });
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.add('border-red-500', 'focus:ring-red-500');
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+            
+            // Add to error container
+            const errorContainer = document.getElementById('errorMessages');
+            const errorList = document.getElementById('errorList');
+            const errorItem = document.createElement('div');
+            errorItem.className = 'mb-1';
+            errorItem.textContent = '• ' + message;
+            errorList.appendChild(errorItem);
+            
+            errorContainer.classList.remove('hidden');
+        }
+
+        function hideErrors() {
+            // Clear field errors
+            document.querySelectorAll('[id$="Error"]').forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+            
+            // Clear input borders
+            document.querySelectorAll('input').forEach(el => {
+                el.classList.remove('border-red-500', 'focus:ring-red-500');
+            });
+            
+            // Clear error container
+            document.getElementById('errorList').innerHTML = '';
+            document.getElementById('errorMessages').classList.add('hidden');
+        }
+
+        // Simulate login (replace with actual form submission)
+        function simulateLogin(username, password) {
+            const button = document.getElementById('loginButton');
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in...';
+            button.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                
+                // Show success message (replace with actual redirect)
+                alert('Login successful! Redirecting...');
+                // window.location.href = '/'; // Uncomment for actual redirect
+            }, 1500);
+        }
+
+        // Demo credentials
+        function fillDemoCredentials(userType) {
+            if (userType === 'user1') {
+                document.getElementById('username').value = 'john_doe';
+                document.getElementById('password').value = 'password123';
+            } else {
+                document.getElementById('username').value = 'jane_smith';
+                document.getElementById('password').value = 'password123';
+            }
+        }
+
+        // Forgot Password Modal
+        function showForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.remove('hidden');
+            document.getElementById('forgotPasswordModal').classList.add('flex');
+        }
+
+        function hideForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.add('hidden');
+            document.getElementById('forgotPasswordModal').classList.remove('flex');
+        }
+
+        function sendResetLink() {
+            const email = document.getElementById('resetEmail').value;
+            if (!email) {
+                alert('Please enter your email');
+                return;
+            }
+            alert(`Password reset link sent to ${email}`);
+            hideForgotPassword();
+        }
+
+        // Redirect to signup (replace with actual URL)
+        function redirectToSignup() {
+            alert('Redirect to signup page');
+            // window.location.href = '/signup/'; // Uncomment for actual redirect
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('forgotPasswordModal');
+            if (event.target === modal) {
+                hideForgotPassword();
+            }
+        }
+    </script>
+</body>
+</html>
