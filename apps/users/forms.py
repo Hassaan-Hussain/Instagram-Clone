@@ -3,6 +3,6 @@ from .models import UserProfile
 
 
 class UserRegistrationForm(UserCreationForm):
-    class Meta:
+    class Meta(UserCreationForm.Meta):
         model = UserProfile
-        fields = ('email','first_name', 'last_name', 'username', 'profile_image', 'bio', 'birth_date')
+        fields = ('username','password1', 'password2', 'bio', 'profile_image',)

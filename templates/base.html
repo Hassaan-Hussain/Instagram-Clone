@@ -303,31 +303,45 @@
 
                         <!-- Suggested Users -->
                         <div class="space-y-4">
-                            {% for suggestion in suggestions %}
+                        {% for suggestion in all_users %}
+                            {% if request.user.username != suggestion.username %}
                             <div class="flex items-center justify-between">
+                                <!-- Left side: Image and Username -->
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 rounded-full overflow-hidden">
-                                        {% if suggestion.profile_pic %}
-                                            <img src="{{ suggestion.profile_pic.url }}" alt="{{ suggestion.username }}" class="w-full h-full object-cover">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                                        {% if suggestion.profile_image %}
+                                            <img src="{{ suggestion.profile_image.url }}" alt="{{ suggestion.username }}" class="w-full h-full object-cover">
                                         {% else %}
                                             <div class="w-full h-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-400 text-sm font-bold">
                                                 {{ suggestion.username|first|upper }}
                                             </div>
                                         {% endif %}
                                     </div>
+                                    
                                     <div>
-                                        <a href="#" class="text-sm font-semibold text-gray-800 dark:text-white hover:underline">
+                                        <a href="{% url 'profile' suggestion.username %}" class="block text-sm font-semibold text-gray-800 dark:text-white hover:underline">
                                             {{ suggestion.username }}
                                         </a>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">Suggested for you</p>
                                     </div>
                                 </div>
-                                <button class="follow-btn text-xs text-purple-600 font-semibold hover:text-purple-700" data-user-id="{{ suggestion.id }}">
-                                    Follow
-                                </button>
+
+                                <!-- Right side: Follow/Unfollow Button -->
+                                <form action="{% if suggestion.username in following_list %}{% url 'unfollow' suggestion.username %}{% else %}{% url 'follow' suggestion.username %}{% endif %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-xs font-semibold {% if suggestion.username in following_list %}text-gray-500 hover:text-gray-700{% else %}text-purple-600 hover:text-purple-700{% endif %}">
+                                        {% if suggestion.username in following_list %}
+                                            Unfollow
+                                        {% else %}
+                                            Follow
+                                        {% endif %}
+                                    </button>
+                                </form>
                             </div>
-                            {% endfor %}
-                        </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
 
                         <!-- Footer Links -->
                         <div class="mt-6">

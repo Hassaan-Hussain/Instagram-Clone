@@ -10,3 +10,10 @@ class UserProfile(AbstractUser):
     def __str__(self):
         return f"{self.username}"
     
+
+class UserFollowInfo(models.Model):
+    follower = models.CharField()
+    following = models.CharField()
+    
+    def  __str__(self):
+        return f"{self.follower} following {self.following}"
